@@ -15,5 +15,5 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class GetAllBooksByAuthorRequestXml {
 
     @XmlElement(name = "author_id", required = true)
-    private Integer authorId;
+    private String authorId;
 }

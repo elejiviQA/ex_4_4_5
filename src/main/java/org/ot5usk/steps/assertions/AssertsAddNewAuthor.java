@@ -8,16 +8,8 @@ public class AssertsAddNewAuthor {
 
     public static void verifyAuthorId(AddNewAuthorResponse response) {
         assertAll(
-                () -> assertAuthorIdIsNotNull(response),
-                () -> assertAuthorIdGreaterThanZero(response)
+                () -> assertNotNull(response.getAuthorId()),
+                () -> assertTrue(response.getAuthorId() > 0)
         );
-    }
-
-    public static void assertAuthorIdIsNotNull(AddNewAuthorResponse response) {
-        assertNotNull(response.getAuthorId());
-    }
-
-    public static void assertAuthorIdGreaterThanZero(AddNewAuthorResponse response) {
-        assertTrue(response.getAuthorId() > 0);
     }
 }

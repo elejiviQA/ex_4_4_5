@@ -1,6 +1,7 @@
 package org.ot5usk.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -25,16 +26,19 @@ public class Author {
 
     @NonNull
     @XmlElement(name = "first_name", required = true)
+    @JsonProperty("firstName")
     private String firstName;
 
     @NonNull
     @XmlElement(name = "family_name", required = true)
+    @JsonProperty("familyName")
     private String familyName;
 
     @XmlElement(name = "second_name")
+    @JsonProperty("secondName")
     private String secondName;
 
-    public Author(@NonNull Long id) {
+    public Author(Long id) {
         this.id = id;
     }
 }
