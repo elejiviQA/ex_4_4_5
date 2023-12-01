@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class NegativeResponse {
+public class DefaultNegativeResponse {
 
     private String errorCode;
     private String errorMessage;

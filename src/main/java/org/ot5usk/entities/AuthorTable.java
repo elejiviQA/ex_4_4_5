@@ -1,4 +1,4 @@
-package org.ot5usk.entity;
+package org.ot5usk.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @XmlRootElement(name = "author")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Author {
+public class AuthorTable {
 
     @NonNull
     @XmlElement(name = "id", required = true)
@@ -38,7 +38,7 @@ public class Author {
     @JsonProperty("secondName")
     private String secondName;
 
-    public Author(Long id) {
+    public AuthorTable(Long id) {
         this.id = id;
     }
 }

@@ -7,7 +7,6 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
-import org.ot5usk.entity.Author;
 import org.ot5usk.models.add_new_author.AddNewAuthorRequest;
 import org.ot5usk.models.add_new_author.AddNewAuthorResponse;
 import org.ot5usk.models.add_new_book.AddNewBookRequest;
@@ -15,7 +14,7 @@ import org.ot5usk.models.add_new_book.AddNewBookResponse;
 import org.ot5usk.models.get_all_books_by_author.GetAllBooksByAuthorResponse;
 import org.ot5usk.models.get_all_books_by_author_xml.GetAllBooksByAuthorRequestXml;
 import org.ot5usk.models.get_all_books_by_author_xml.GetAllBooksByAuthorResponseXml;
-import org.ot5usk.models.negative_responses.NegativeResponse;
+import org.ot5usk.models.negative_responses.DefaultNegativeResponse;
 import org.ot5usk.steps.EndPoints;
 
 import java.util.List;
@@ -39,9 +38,7 @@ public class Specifications {
                 .build();
     }
 
-    public static AddNewAuthorResponse requestSpecAddNewAuthor(String firstName, String familyName, String secondName, Integer expStCode) {
-        AddNewAuthorRequest addNewAuthorRequest = new AddNewAuthorRequest(firstName, familyName, secondName);
-
+    public static AddNewAuthorResponse requestSpecAddNewAuthor(AddNewAuthorRequest addNewAuthorRequest, Integer expStCode) {
         return given().spec(requestSpec(ContentType.JSON))
                 .body(addNewAuthorRequest)
                 .when()
@@ -50,10 +47,7 @@ public class Specifications {
                 .extract().as(AddNewAuthorResponse.class);
     }
 
-    public static AddNewBookResponse requestSpecAddNewBook(String bookTitle, Long authorId, Integer expStCode) {
-        Author author = new Author(authorId);
-        AddNewBookRequest addNewBookRequest = new AddNewBookRequest(bookTitle, author);
-
+    public static AddNewBookResponse requestSpecAddNewBook(AddNewBookRequest addNewBookRequest, Integer expStCode) {
         return given().spec(requestSpec(ContentType.JSON))
                 .body(addNewBookRequest)
                 .when()
@@ -62,16 +56,13 @@ public class Specifications {
                 .extract().as(AddNewBookResponse.class);
     }
 
-    public static NegativeResponse requestSpecAddNewBookNegative(String bookTitle, Long authorId, Integer expStCode) {
-        Author author = new Author(authorId);
-        AddNewBookRequest addNewBookBadRequest = new AddNewBookRequest(bookTitle, author);
-
+    public static DefaultNegativeResponse requestSpecAddNewBookNegative(AddNewBookRequest addNewBookBadRequest, Integer expStCode) {
         return given().spec(requestSpec(ContentType.JSON))
                 .body(addNewBookBadRequest)
                 .when()
                 .post(EndPoints.ADD_NEW_BOOK.getPath())
                 .then().spec(responseSpecWithStatus(expStCode))
-                .extract().as(NegativeResponse.class);
+                .extract().as(DefaultNegativeResponse.class);
     }
 
     public static List<GetAllBooksByAuthorResponse> requestSpecGetAllBooksByAuthor(Long authorId, Integer expStCode) {
@@ -82,12 +73,12 @@ public class Specifications {
                 .extract().jsonPath().getList(".", GetAllBooksByAuthorResponse.class);
     }
 
-    public static NegativeResponse requestSpecGetAllBookByIncorrectAuthor(String incorrectAuthorId, Integer expStCode) {
+    public static DefaultNegativeResponse requestSpecGetAllBookByIncorrectAuthor(String incorrectAuthorId, Integer expStCode) {
         return given().spec(requestSpec(ContentType.JSON))
                 .when()
                 .get(EndPoints.GET_ALL_BOOKS_BY_AUTHOR.getPath(), incorrectAuthorId)
                 .then().spec(responseSpecWithStatus(expStCode))
-                .extract().as(NegativeResponse.class);
+                .extract().as(DefaultNegativeResponse.class);
     }
 
     public static GetAllBooksByAuthorResponseXml requestSpecGetAllBooksByAuthorXml(String authorId, Integer expStCode) {
@@ -102,7 +93,7 @@ public class Specifications {
                 .extract().as(GetAllBooksByAuthorResponseXml.class);
     }
 
-    public static NegativeResponse requestSpecGetAllBooksByIncorrectAuthorXml(String authorId, Integer expStCode) {
+    public static DefaultNegativeResponse requestSpecGetAllBooksByIncorrectAuthorXml(String authorId, Integer expStCode) {
         GetAllBooksByAuthorRequestXml getAllBooksByAuthorRequestXml = new GetAllBooksByAuthorRequestXml();
         getAllBooksByAuthorRequestXml.setAuthorId(authorId);
 
@@ -111,8 +102,6 @@ public class Specifications {
                 .when()
                 .post(EndPoints.GET_ALL_BOOKS_BY_AUTHOR_XML.getPath())
                 .then().spec(responseSpecWithStatus(expStCode))
-                .extract().as(NegativeResponse.class);
+                .extract().as(DefaultNegativeResponse.class);
     }
-
-
 }
