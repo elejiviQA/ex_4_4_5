@@ -1,6 +1,7 @@
 package org.ot5usk.utils;
 
 public enum AuthorNameLengthLimits {
+
     MIN(1),
     AVERAGE(25),
     MAX(50);

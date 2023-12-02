@@ -1,6 +1,7 @@
 package org.ot5usk.utils;
 
 public enum BookTitleLengthLimits {
+
     MIN(1),
     AVERAGE(50),
     MAX(100);

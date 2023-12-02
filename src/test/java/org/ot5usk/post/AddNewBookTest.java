@@ -3,98 +3,107 @@ package org.ot5usk.post;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Story;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvFileSource;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.ot5usk.utils.steps_executors.BookSender;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.ot5usk.models.add_new_author.AddNewAuthorRequest;
+import org.ot5usk.models.add_new_author.AddNewAuthorResponse;
+import org.ot5usk.models.add_new_book.AddNewBookRequest;
+import org.ot5usk.models.add_new_book.AddNewBookResponse;
+import org.ot5usk.models.negative_responses.DefaultNegativeResponse;
+import org.ot5usk.utils.BookTitleLengthLimits;
 
-import org.ot5usk.utils.creators.string_creator.BookTitleLengthLimits;
-
-import java.util.stream.Stream;
-
-import static org.ot5usk.utils.creators.string_creator.StringCreator.*;
+import static org.ot5usk.steps.assertions.AddNewBookAsserts.assertExpectedBookId;
+import static org.ot5usk.steps.assertions.NegativeAsserts.assertNegativeResponse;
+import static org.ot5usk.steps.specifications.Specifications.*;
+import static org.ot5usk.utils.RequestBuilder.buildAddNewBookRequest;
+import static org.ot5usk.utils.RequestBuilder.buildAddnewAuthorRequest;
+import static org.ot5usk.utils.StringBuilder.randCorrectStringBySelectedLength;
 
 @Epic("POST tests")
 @Story("Adding new book")
 public class AddNewBookTest {
 
-    private static final BookSender bookSender = new BookSender();
+    private AddNewAuthorResponse currentAuthor;
+    private AddNewBookRequest expectedBook;
+    private AddNewBookResponse currentBook;
+    private DefaultNegativeResponse defaultNegativeResponse;
+    private String expectedBookTitle;
 
-    @Tag("maybebugs")
-    @Tag("post")
-    @Tag("positive")
-    @DisplayName("With max length title -REQUIREMENTS: why bookTitle length 100 its not ok?")
-    @Description("Should return bookId, status-code: 201")
-    @Test
-    void withMaxLimitLengthTitle() {
-        String correctTitle = randCorrectStringBySelectedLength(BookTitleLengthLimits.MAX.getLength());
-        bookSender.sendBook(correctTitle);
-    }
-
-    @Tag("maybebugs")
-    @Tag("filthy")
-    @Tag("post")
-    @Tag("positive")
-    @DisplayName("why bookTitle length 100 and earlier its negative too?")
-    @Description("Should return bookId, status-code: 201")
-    @ParameterizedTest(name = "book_title_length = {1}")
-    @MethodSource("randCorrectTitlesCharsOfCorrectTitlesLengths")
-    void withCorrectLengthsTitles(String correctTitle, int ignoredLength) {
-        bookSender.sendBook(correctTitle);
-    }
-
-    static Stream<Arguments> randCorrectTitlesCharsOfCorrectTitlesLengths() {
-        return randCorrectStringsBySelectedLengths(
-                BookTitleLengthLimits.MIN.getLength(),
-                BookTitleLengthLimits.MAX.getLength()
-        ).stream();
+    @BeforeEach
+    public void init() {
+        AddNewAuthorRequest expectedAuthor = buildAddnewAuthorRequest();
+        currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 201);
     }
 
     @Tag("post")
     @Tag("positive")
-    @DisplayName("With all fields filled correct")
-    @Description("Should return bookId, status-code: 201")
+    @DisplayName("Title length limits")
+    @Description("status-code: 201")
+    @ParameterizedTest
+    @EnumSource(BookTitleLengthLimits.class)
+    public void withTitleLengthLimits(BookTitleLengthLimits limits) {
+        expectedBookTitle = randCorrectStringBySelectedLength(limits.getLength());
+        expectedBook = buildAddNewBookRequest(expectedBookTitle, currentAuthor.getAuthorId());
+        currentBook = requestSpecAddNewBook(expectedBook, 201);
+        assertExpectedBookId(currentBook);
+    }
+
+    @Tag("post")
+    @Tag("positive")
+    @DisplayName("All fields filled correct")
+    @Description("status-code: 201")
     @ParameterizedTest(name = "title: {0}")
     @CsvFileSource(resources = "/test_cases/positive/correct_book_titles_values.csv")
-    //Подтверждение что именно та книга в базе (проверить через гет all)
-    void withCorrectTitleChars(String correctTitle) {
-        bookSender.sendBook(correctTitle);
+    public void withCorrectTitleChars(String correctTitle) {
+        expectedBookTitle = correctTitle;
+        expectedBook = buildAddNewBookRequest(expectedBookTitle, currentAuthor.getAuthorId());
+        currentBook = requestSpecAddNewBook(expectedBook, 201);
+        assertExpectedBookId(currentBook);
     }
 
     @Tag("post")
     @Tag("positive")
     @DisplayName("Duplicate book")
-    @Description("Should return bookId, status-code: 201")
+    @Description("status-code: 201")
     @Test
-    void withCorrectDuplicateTitles() {
-        String correctDuplicateTitle = randCorrectStringBySelectedLength(BookTitleLengthLimits.AVERAGE.getLength());
-        bookSender.sendBook(correctDuplicateTitle, 2);
+    public void withCorrectDuplicateTitles() {
+        expectedBookTitle = randCorrectStringBySelectedLength(BookTitleLengthLimits.AVERAGE.getLength());
+        expectedBook = buildAddNewBookRequest(expectedBookTitle, currentAuthor.getAuthorId());
+        currentBook = requestSpecAddNewBook(expectedBook, 201);
+        assertExpectedBookId(currentBook);
+        currentBook = requestSpecAddNewBook(expectedBook, 201);
+        assertExpectedBookId(currentBook);
     }
 
     @Tag("post")
     @Tag("negative")
-    @DisplayName("With title length > 100")
-    @Description("Should return status-code: 400")
-    @ParameterizedTest(name = "book_title_length = {1}")
-    @MethodSource("randCorrectTitlesCharsWhenTitlesByNotCorrectLengths")
-    void withTitleIsIncorrectLengths(String incorrectTitle, int ignoredLength) {
-        bookSender.sendBook(incorrectTitle, 400, "Валидация не пройдена", "Некорректный размер поля firstName", "1001");
-    }
-
-    static Stream<Arguments> randCorrectTitlesCharsWhenTitlesByNotCorrectLengths() {
-        return randCorrectStringsBySelectedLengths(101, 102).stream();
+    @DisplayName("Incorrect title length")
+    @Description("status-code: 400")
+    @Test
+    public void withIncorrectTitleLength() {
+        expectedBookTitle = randCorrectStringBySelectedLength(BookTitleLengthLimits.MAX.getLength() + 1);
+        expectedBook = buildAddNewBookRequest(expectedBookTitle, currentAuthor.getAuthorId());
+        defaultNegativeResponse = requestSpecAddNewBookNegative(expectedBook, 400);
+        assertNegativeResponse(defaultNegativeResponse, "1001", "Некорректный размер поля firstName", "Валидация не пройдена");
     }
 
     @Tag("maybebugs")
     @Tag("post")
     @Tag("negative")
-    @DisplayName("Negative test cases")
-    @Description("look at: /test_cases/negative/by_different_incorrect_values.csv")
+    @DisplayName("Another negative test cases")
+    @Description("look at file: /test_cases/negative/by_different_incorrect_values.csv")
     @ParameterizedTest(name = "bookTitle = {0}, authorId = {1}")
     @CsvFileSource(resources = "/test_cases/negative/add_new_book/by_different_incorrect_values.csv")
-    void withAnotherIncorrectValues(String bookTitle, Long authorId, Integer expStCode, String expErrCode, String expErrMsg, String expErrDtls) {
-        bookSender.sendBook(bookTitle, authorId, expStCode, expErrCode, expErrMsg, expErrDtls);
+    public void withAnotherIncorrectValues(String title, Long authorId, Integer expStCode, String expErrCode, String expErrMsg, String expErrDtls) {
+        expectedBookTitle = title;
+        currentAuthor.setAuthorId(authorId);
+        expectedBook = buildAddNewBookRequest(expectedBookTitle, currentAuthor.getAuthorId());
+        defaultNegativeResponse = requestSpecAddNewBookNegative(expectedBook, expStCode);
+        assertNegativeResponse(defaultNegativeResponse, expErrCode, expErrMsg, expErrDtls);
     }
 }
