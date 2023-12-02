@@ -3,7 +3,7 @@ package org.ot5usk.models.add_new_book;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.ot5usk.entities.AuthorTable;
+import org.ot5usk.entities.Author;
 
 @Data
 @AllArgsConstructor
@@ -11,5 +11,5 @@ import org.ot5usk.entities.AuthorTable;
 public class AddNewBookRequest {
 
     private String bookTitle;
-    private AuthorTable author;
+    private Author author;
 }

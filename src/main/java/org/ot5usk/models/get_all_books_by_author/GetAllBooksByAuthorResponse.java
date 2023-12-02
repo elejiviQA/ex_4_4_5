@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ot5usk.entities.AuthorTable;
+import org.ot5usk.entities.Author;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class GetAllBooksByAuthorResponse {
 
     @XmlElement(name = "author", required = true)
-    private AuthorTable author;
+    private Author author;
 
     @XmlElement(name = "book_title", required = true)
     @JsonProperty("bookTitle")

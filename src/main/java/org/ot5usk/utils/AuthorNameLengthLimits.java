@@ -1,4 +1,4 @@
-package org.ot5usk.utils.creators.string_creator;
+package org.ot5usk.utils;
 
 public enum AuthorNameLengthLimits {
     MIN(1),

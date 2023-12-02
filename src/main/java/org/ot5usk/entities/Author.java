@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @XmlRootElement(name = "author")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AuthorTable {
+public class Author {
 
     @NonNull
     @XmlElement(name = "id", required = true)
@@ -38,7 +38,7 @@ public class AuthorTable {
     @JsonProperty("secondName")
     private String secondName;
 
-    public AuthorTable(Long id) {
+    public Author(Long id) {
         this.id = id;
     }
 }

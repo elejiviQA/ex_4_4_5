@@ -56,9 +56,9 @@ public class Specifications {
                 .extract().as(AddNewBookResponse.class);
     }
 
-    public static DefaultNegativeResponse requestSpecAddNewBookNegative(AddNewBookRequest addNewBookBadRequest, Integer expStCode) {
+    public static DefaultNegativeResponse requestSpecAddNewBookNegative(AddNewBookRequest addNewBookRequest, Integer expStCode) {
         return given().spec(requestSpec(ContentType.JSON))
-                .body(addNewBookBadRequest)
+                .body(addNewBookRequest)
                 .when()
                 .post(EndPoints.ADD_NEW_BOOK.getPath())
                 .then().spec(responseSpecWithStatus(expStCode))
