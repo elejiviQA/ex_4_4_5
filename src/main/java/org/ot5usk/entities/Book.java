@@ -1,4 +1,4 @@
-package org.ot5usk.entity;
+package org.ot5usk.entities;
 
 import lombok.Data;
 
@@ -9,4 +9,3 @@ public class Book {
     private String bookTitle;
     private Long authorId;
 }
-

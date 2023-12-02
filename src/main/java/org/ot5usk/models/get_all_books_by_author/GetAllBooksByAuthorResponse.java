@@ -1,9 +1,10 @@
 package org.ot5usk.models.get_all_books_by_author;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ot5usk.entity.Author;
+import org.ot5usk.entities.Author;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -21,5 +22,6 @@ public class GetAllBooksByAuthorResponse {
     private Author author;
 
     @XmlElement(name = "book_title", required = true)
+    @JsonProperty("bookTitle")
     private String bookTitle;
 }

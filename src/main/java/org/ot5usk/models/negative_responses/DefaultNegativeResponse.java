@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DefaultNegativeResponse {
 
-    private Integer errorCode;
+    private String errorCode;
     private String errorMessage;
     private String errorDetails;
 }

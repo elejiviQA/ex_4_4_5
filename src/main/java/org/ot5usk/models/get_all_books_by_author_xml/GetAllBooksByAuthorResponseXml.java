@@ -3,7 +3,7 @@ package org.ot5usk.models.get_all_books_by_author_xml;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ot5usk.entity.Book;
+import org.ot5usk.models.get_all_books_by_author.GetAllBooksByAuthorResponse;
 
 import javax.xml.bind.annotation.*;
 import java.util.List;
@@ -17,5 +17,5 @@ public class GetAllBooksByAuthorResponseXml {
 
     @XmlElementWrapper(name = "books")
     @XmlElement(name = "book", required = true)
-    private List<Book> books;
+    private List<GetAllBooksByAuthorResponse> books;
 }
