@@ -3,6 +3,7 @@ package org.ot5usk.get;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Story;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,6 +15,7 @@ import org.ot5usk.models.get_all_books_by_author.GetAllBooksByAuthorResponse;
 import org.ot5usk.models.negative_responses.DefaultNegativeResponse;
 import org.ot5usk.steps.assertions.GetAllBooksByAuthorAsserts;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.ot5usk.steps.assertions.NegativeAsserts.assertNegativeResponse;
@@ -25,14 +27,23 @@ import static org.ot5usk.utils.RequestBuilder.buildAddnewAuthorRequest;
 @Story("Get all books by author")
 public class GetAllBooksByAuthorTest {
 
-    private static final AddNewAuthorRequest expectedAuthor = buildAddnewAuthorRequest();
-    private static final AddNewAuthorResponse currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 201);
+    private static AddNewAuthorRequest expectedAuthor;
+    private static AddNewAuthorResponse currentAuthor;
 
     public void executeAsserts(GetAllBooksByAuthorAsserts asserts) {
         asserts.assertExpectedAuthorId();
         asserts.assertExpectedBookTitles();
         asserts.assertExpectedAuthorName();
         asserts.assertExpectedNumOfBooks();
+        asserts.assertExpectedUpdated();
+        asserts.assertExpectedAuthorBirthDate();
+    }
+
+    @BeforeAll
+    static void auth() {
+        executeAuth("test_log", "123qweasd");
+        expectedAuthor = buildAddnewAuthorRequest();
+        currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 201);
     }
 
     @Tag("get")
@@ -43,9 +54,12 @@ public class GetAllBooksByAuthorTest {
     @CsvFileSource(resources = "/test_cases/positive/correct_book_titles_values.csv")
     void testGetAllBooksByCorrectAuthor(String title) {
         AddNewBookRequest expectedBook = buildAddNewBookRequest(title, currentAuthor.getAuthorId());
+        System. currentTimeMillis();
         requestSpecAddNewBook(expectedBook, 201);
+        System. currentTimeMillis();
+        long approximateUpdatedTime = new Date().getTime();
         List<GetAllBooksByAuthorResponse> currentBooks = requestSpecGetAllBooksByAuthor(currentAuthor.getAuthorId(), 200);
-        GetAllBooksByAuthorAsserts asserts = new GetAllBooksByAuthorAsserts(expectedBook, expectedAuthor, currentAuthor, currentBooks);
+        GetAllBooksByAuthorAsserts asserts = new GetAllBooksByAuthorAsserts(expectedBook, expectedAuthor, currentAuthor, currentBooks, approximateUpdatedTime);
         executeAsserts(asserts);
     }
 

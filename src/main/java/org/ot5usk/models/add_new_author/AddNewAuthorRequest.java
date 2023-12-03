@@ -13,7 +13,7 @@ public class AddNewAuthorRequest {
     @NonNull
     private String firstName;
 
-    @NonNull
     private String familyName;
     private String secondName;
+    private String birthDate;
 }

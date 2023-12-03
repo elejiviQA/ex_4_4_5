@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -24,4 +25,8 @@ public class GetAllBooksByAuthorResponse {
     @XmlElement(name = "book_title", required = true)
     @JsonProperty("bookTitle")
     private String bookTitle;
+
+    @XmlElement(name = "updated")
+    @JsonProperty("updated")
+    private Date updated;
 }

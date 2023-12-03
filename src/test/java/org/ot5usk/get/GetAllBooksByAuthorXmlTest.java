@@ -3,6 +3,7 @@ package org.ot5usk.get;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Story;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,6 +15,7 @@ import org.ot5usk.models.get_all_books_by_author.GetAllBooksByAuthorResponse;
 import org.ot5usk.models.negative_responses.DefaultNegativeResponse;
 import org.ot5usk.steps.assertions.GetAllBooksByAuthorXmlAsserts;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.ot5usk.steps.assertions.NegativeAsserts.assertNegativeResponse;
@@ -25,14 +27,23 @@ import static org.ot5usk.utils.RequestBuilder.buildAddnewAuthorRequest;
 @Story("Get all books by author .xml")
 public class GetAllBooksByAuthorXmlTest {
 
-    private static final AddNewAuthorRequest expectedAuthor = buildAddnewAuthorRequest();
-    private static final AddNewAuthorResponse currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 201);
+    private static AddNewAuthorRequest expectedAuthor;
+    private static AddNewAuthorResponse currentAuthor;
 
     public void executeXmlAsserts(GetAllBooksByAuthorXmlAsserts xmlAsserts) {
         xmlAsserts.assertExpectedAuthorId();
         xmlAsserts.assertExpectedBookTitles();
         xmlAsserts.assertExpectedAuthorName();
         xmlAsserts.assertExpectedNumOfBooks();
+        xmlAsserts.assertExpectedUpdated();
+        xmlAsserts.assertExpectedAuthorBirthDate();
+    }
+
+    @BeforeAll
+    static void auth() {
+        executeAuth("test_log", "123qweasd");
+        expectedAuthor = buildAddnewAuthorRequest();
+        currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 201);
     }
 
     @Tag("get")
@@ -44,8 +55,9 @@ public class GetAllBooksByAuthorXmlTest {
     void testGetAllBooksByAuthorXml(String title) {
         AddNewBookRequest expectedBook = buildAddNewBookRequest(title, currentAuthor.getAuthorId());
         requestSpecAddNewBook(expectedBook, 201);
+        long approximateUpdatedTime = new Date().getTime();
         List<GetAllBooksByAuthorResponse> currentBooks = requestSpecGetAllBooksByAuthorXml(currentAuthor.getAuthorId().toString(), 200).getBooks();
-        GetAllBooksByAuthorXmlAsserts xmlAsserts = new GetAllBooksByAuthorXmlAsserts(expectedBook, expectedAuthor, currentAuthor, currentBooks);
+        GetAllBooksByAuthorXmlAsserts xmlAsserts = new GetAllBooksByAuthorXmlAsserts(expectedBook, expectedAuthor, currentAuthor, currentBooks, approximateUpdatedTime);
         executeXmlAsserts(xmlAsserts);
     }
 

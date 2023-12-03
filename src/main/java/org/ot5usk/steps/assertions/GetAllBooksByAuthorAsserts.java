@@ -7,6 +7,7 @@ import org.ot5usk.models.add_new_book.AddNewBookRequest;
 import org.ot5usk.models.get_all_books_by_author.GetAllBooksByAuthorResponse;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,10 +23,12 @@ public class GetAllBooksByAuthorAsserts {
     private final AddNewAuthorResponse currentAuthor;
     private static List<String> expectedTitles = new ArrayList<>();
     private static List<String> currentTitles = new ArrayList<>();
+    private final long approximateUpdatedTime;
 
     public GetAllBooksByAuthorAsserts(AddNewBookRequest expectedBook, AddNewAuthorRequest expectedAuthor,
-                                      AddNewAuthorResponse currentAuthor, List<GetAllBooksByAuthorResponse> currentBooks) {
+                                      AddNewAuthorResponse currentAuthor, List<GetAllBooksByAuthorResponse> currentBooks, long approximateUpdatedTime) {
         cleanIfNecessary();
+        this.approximateUpdatedTime = approximateUpdatedTime;
         this.expectedBook = expectedBook;
         this.expectedAuthor = expectedAuthor;
         this.currentAuthor = currentAuthor;
@@ -66,5 +69,16 @@ public class GetAllBooksByAuthorAsserts {
 
     public void assertExpectedBookTitles() {
         expectedTitles.forEach(expectedTitle -> assertTrue(currentTitles.contains(expectedTitle)));
+    }
+
+    public void assertExpectedUpdated() {
+        Date currentDate =  currentBooks.get(currentBooks.size() - 1).getUpdated();
+        if (currentDate != null) {
+            assertTrue(approximateUpdatedTime - currentDate.getTime() < 30000);
+        }
+    }
+
+    public void assertExpectedAuthorBirthDate() {
+        currentBooks.forEach(currentBook -> assertEquals(expectedAuthor.getBirthDate(), currentBook.getAuthor().getBirthDate()));
     }
 }
