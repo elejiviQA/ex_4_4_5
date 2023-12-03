@@ -58,4 +58,16 @@ public class AddNewAuthorTest {
         currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 201);
         assertExpectedAuthorId(currentAuthor);
     }
+
+    @Tag("post")
+    @Tag("negative")
+    @DisplayName("Without family name")
+    @Description("status-code: 400")
+    @Test
+    void withoutFamilyName() {
+        expectedAuthor.setFamilyName("");
+        currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 400);
+        expectedAuthor.setFamilyName(null);
+        currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 400);
+    }
 }
