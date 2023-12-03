@@ -11,6 +11,8 @@ import org.ot5usk.models.add_new_author.AddNewAuthorRequest;
 import org.ot5usk.models.add_new_author.AddNewAuthorResponse;
 import org.ot5usk.models.add_new_book.AddNewBookRequest;
 import org.ot5usk.models.add_new_book.AddNewBookResponse;
+import org.ot5usk.models.auth.AuthRequest;
+import org.ot5usk.models.auth.AuthResponse;
 import org.ot5usk.models.get_all_books_by_author.GetAllBooksByAuthorResponse;
 import org.ot5usk.models.get_all_books_by_author_xml.GetAllBooksByAuthorRequestXml;
 import org.ot5usk.models.get_all_books_by_author_xml.GetAllBooksByAuthorResponseXml;
@@ -20,13 +22,30 @@ import org.ot5usk.steps.EndPoints;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-
 public class Specifications {
+
+    private static AuthResponse authResponse = new AuthResponse();
+
+    public static void executeAuth(String login, String password) {
+        AuthRequest authRequest = new AuthRequest(login, password);
+        authResponse = given().contentType(ContentType.JSON)
+                .baseUri(EndPoints.BASE.getPath())
+                .basePath(EndPoints.AUTH.getPath())
+                .filter(new RequestLoggingFilter())
+                .filter(new ResponseLoggingFilter())
+                .body(authRequest)
+                .when()
+                .get()
+                .then()
+                .spec(responseSpecWithStatus(200))
+                .extract().as(AuthResponse.class);
+    }
 
     public static RequestSpecification requestSpec(ContentType contentType) {
         return new RequestSpecBuilder()
                 .setBaseUri(EndPoints.BASE.getPath())
                 .setContentType(contentType)
+                .addHeader("Authorization", "Bearer " + authResponse.getJwtToken())
                 .addFilter(new RequestLoggingFilter())
                 .addFilter(new ResponseLoggingFilter())
                 .build();

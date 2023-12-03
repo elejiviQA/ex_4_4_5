@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -37,6 +38,10 @@ public class Author {
     @XmlElement(name = "second_name")
     @JsonProperty("secondName")
     private String secondName;
+
+    @XmlElement(name = "birth_date")
+    @JsonProperty("birthDate")
+    private Date birthDate;
 
     public Author(Long id) {
         this.id = id;

@@ -16,4 +16,5 @@ public class AddNewAuthorRequest {
     @NonNull
     private String familyName;
     private String secondName;
+    private String birthDate;
 }

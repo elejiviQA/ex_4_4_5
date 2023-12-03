@@ -10,7 +10,7 @@ import java.util.List;
 public class GetAllBooksByAuthorXmlAsserts extends GetAllBooksByAuthorAsserts {
 
     public GetAllBooksByAuthorXmlAsserts(AddNewBookRequest expectedBook, AddNewAuthorRequest expectedAuthor,
-                                         AddNewAuthorResponse currentAuthor, List<GetAllBooksByAuthorResponse> currentBooks) {
-        super(expectedBook, expectedAuthor, currentAuthor, currentBooks);
+                                         AddNewAuthorResponse currentAuthor, List<GetAllBooksByAuthorResponse> currentBooks, long approximateUpdatedTime) {
+        super(expectedBook, expectedAuthor, currentAuthor, currentBooks, approximateUpdatedTime);
     }
 }
