@@ -38,7 +38,7 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public List<Book> getAllBooksByAuthorId(long authorId) {
         try (Session session = Util.getSessionFactory().openSession()) {
-            NativeQuery<Book> getAllBooksQuery = session.createNativeQuery("SELECT * FROM Book WHERE author_Id = :authorId", Book.class);
+            NativeQuery<Book> getAllBooksQuery = session.createNativeQuery("SELECT * FROM Book WHERE author_id = :authorId", Book.class);
             getAllBooksQuery.setParameter("authorId", authorId);
             return getAllBooksQuery.getResultList();
         } catch (Exception e) {
@@ -62,7 +62,8 @@ public class BookRepositoryImpl implements BookRepository {
         Transaction transaction = null;
         try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.remove(session.find(Book.class, bookTitle));
+            NativeQuery<Book> removeBookByTitleQuery = session.createNativeQuery("DELETE FROM Book where book_title = :bookTitle", Book.class);
+            removeBookByTitleQuery.setParameter("bookTitle", bookTitle).executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {

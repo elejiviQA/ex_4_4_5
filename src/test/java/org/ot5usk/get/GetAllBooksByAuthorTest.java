@@ -54,9 +54,7 @@ public class GetAllBooksByAuthorTest {
     @CsvFileSource(resources = "/test_cases/positive/correct_book_titles_values.csv")
     void testGetAllBooksByCorrectAuthor(String title) {
         AddNewBookRequest expectedBook = buildAddNewBookRequest(title, currentAuthor.getAuthorId());
-        System.currentTimeMillis();
         requestSpecAddNewBook(expectedBook, 201);
-        System.currentTimeMillis();
         long approximateUpdatedTime = new Date().getTime();
         List<GetAllBooksByAuthorResponse> currentBooks = requestSpecGetAllBooksByAuthor(currentAuthor.getAuthorId(), 200);
         GetAllBooksByAuthorAsserts asserts = new GetAllBooksByAuthorAsserts(expectedBook, expectedAuthor, currentAuthor, currentBooks, approximateUpdatedTime);

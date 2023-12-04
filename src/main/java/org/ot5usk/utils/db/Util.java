@@ -38,7 +38,7 @@ public class Util {
                 .applySetting("show_sql", "false")
                 .applySetting("hibernate.format_sql", "true");
         StandardServiceRegistry serviceRegistry = serviceRegistryBuilder.build();
-        MetadataSources metadataSources = new MetadataSources(serviceRegistry).addAnnotatedClasses(Author.class, Book.class);
+        MetadataSources metadataSources = new MetadataSources(serviceRegistry).addAnnotatedClasses(org.ot5usk.entities.Author.class, org.ot5usk.entities.Book.class);
         MetadataBuilder metadataBuilder = metadataSources.getMetadataBuilder();
         Metadata metadata = metadataBuilder.build();
 
