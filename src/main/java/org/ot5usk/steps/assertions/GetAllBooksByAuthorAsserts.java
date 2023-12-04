@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.ot5usk.utils.StringBuilder.expBookTitlesFromTestCases;
+import static org.ot5usk.utils.builders.StringBuilder.expBookTitlesFromTestCases;
 
 @Getter
 public class GetAllBooksByAuthorAsserts {

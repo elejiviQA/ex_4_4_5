@@ -20,8 +20,8 @@ import java.util.List;
 
 import static org.ot5usk.steps.assertions.NegativeAsserts.assertNegativeResponse;
 import static org.ot5usk.steps.specifications.Specifications.*;
-import static org.ot5usk.utils.RequestBuilder.buildAddNewBookRequest;
-import static org.ot5usk.utils.RequestBuilder.buildAddnewAuthorRequest;
+import static org.ot5usk.utils.builders.RequestBuilder.buildAddNewBookRequest;
+import static org.ot5usk.utils.builders.RequestBuilder.buildAddnewAuthorRequest;
 
 @Epic("GET tests")
 @Story("Get all books by author")
@@ -54,9 +54,9 @@ public class GetAllBooksByAuthorTest {
     @CsvFileSource(resources = "/test_cases/positive/correct_book_titles_values.csv")
     void testGetAllBooksByCorrectAuthor(String title) {
         AddNewBookRequest expectedBook = buildAddNewBookRequest(title, currentAuthor.getAuthorId());
-        System. currentTimeMillis();
+        System.currentTimeMillis();
         requestSpecAddNewBook(expectedBook, 201);
-        System. currentTimeMillis();
+        System.currentTimeMillis();
         long approximateUpdatedTime = new Date().getTime();
         List<GetAllBooksByAuthorResponse> currentBooks = requestSpecGetAllBooksByAuthor(currentAuthor.getAuthorId(), 200);
         GetAllBooksByAuthorAsserts asserts = new GetAllBooksByAuthorAsserts(expectedBook, expectedAuthor, currentAuthor, currentBooks, approximateUpdatedTime);

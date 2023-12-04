@@ -8,7 +8,7 @@ import org.ot5usk.models.add_new_author.AddNewAuthorRequest;
 import org.ot5usk.models.add_new_author.AddNewAuthorResponse;
 import static org.ot5usk.steps.assertions.AddNewAuthorAsserts.assertExpectedAuthorId;
 import static org.ot5usk.steps.specifications.Specifications.*;
-import static org.ot5usk.utils.RequestBuilder.buildAddnewAuthorRequest;
+import static org.ot5usk.utils.builders.RequestBuilder.buildAddnewAuthorRequest;
 
 @Epic("POST tests")
 @Story("Adding new author")

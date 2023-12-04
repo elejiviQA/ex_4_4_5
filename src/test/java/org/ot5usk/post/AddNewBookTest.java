@@ -12,14 +12,14 @@ import org.ot5usk.models.add_new_author.AddNewAuthorResponse;
 import org.ot5usk.models.add_new_book.AddNewBookRequest;
 import org.ot5usk.models.add_new_book.AddNewBookResponse;
 import org.ot5usk.models.negative_responses.DefaultNegativeResponse;
-import org.ot5usk.utils.BookTitleLengthLimits;
+import org.ot5usk.utils.builders.BookTitleLengthLimits;
 
 import static org.ot5usk.steps.assertions.AddNewBookAsserts.assertExpectedBookId;
 import static org.ot5usk.steps.assertions.NegativeAsserts.assertNegativeResponse;
 import static org.ot5usk.steps.specifications.Specifications.*;
-import static org.ot5usk.utils.RequestBuilder.buildAddNewBookRequest;
-import static org.ot5usk.utils.RequestBuilder.buildAddnewAuthorRequest;
-import static org.ot5usk.utils.StringBuilder.randCorrectStringBySelectedLength;
+import static org.ot5usk.utils.builders.RequestBuilder.buildAddNewBookRequest;
+import static org.ot5usk.utils.builders.RequestBuilder.buildAddnewAuthorRequest;
+import static org.ot5usk.utils.builders.StringBuilder.randCorrectStringBySelectedLength;
 
 @Epic("POST tests")
 @Story("Adding new book")

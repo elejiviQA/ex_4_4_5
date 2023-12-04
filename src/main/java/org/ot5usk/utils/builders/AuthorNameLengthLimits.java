@@ -1,4 +1,4 @@
-package org.ot5usk.utils;
+package org.ot5usk.utils.builders;
 
 public enum AuthorNameLengthLimits {
 

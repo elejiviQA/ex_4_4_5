@@ -1,4 +1,4 @@
-package org.ot5usk.utils;
+package org.ot5usk.utils.builders;
 
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.RandomStringUtils;

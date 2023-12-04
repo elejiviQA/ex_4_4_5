@@ -1,11 +1,11 @@
-package org.ot5usk.utils;
+package org.ot5usk.utils.builders;
 
 import org.ot5usk.entities.Author;
 import org.ot5usk.models.add_new_author.AddNewAuthorRequest;
 import org.ot5usk.models.add_new_book.AddNewBookRequest;
 
-import static org.ot5usk.utils.DateBuilder.buildRandomDate;
-import static org.ot5usk.utils.StringBuilder.randCorrectStringBySelectedLengthRandom;
+import static org.ot5usk.utils.builders.DateBuilder.buildRandomDate;
+import static org.ot5usk.utils.builders.StringBuilder.randCorrectStringBySelectedLengthRandom;
 
 public class RequestBuilder {
 
