@@ -6,5 +6,11 @@ import java.util.List;
 
 public interface AuthorRepository {
 
-    Author getAuthorById(long authorId);
+    Author getAuthorById(Long authorId);
+
+    List<Author> getAuthorByName(String firstName, String familyName);
+
+    void saveNewAuthor(String firstName, String familyName);
+
+    void cleanAuthorTable();
 }

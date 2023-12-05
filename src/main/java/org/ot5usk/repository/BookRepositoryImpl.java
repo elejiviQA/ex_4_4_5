@@ -4,7 +4,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
-import org.ot5usk.utils.db.Util;
+import org.ot5usk.utils.db_utils.Util;
 import org.ot5usk.entities.Book;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public class BookRepositoryImpl implements BookRepository {
 
     @Override
-    public void saveBook(String bookTitle, long authorId) {
+    public void saveBook(String bookTitle, Long authorId) {
         String saveBook = """
                 INSERT INTO Book
                 (book_title, author_id)
@@ -36,7 +36,18 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> getAllBooksByAuthorId(long authorId) {
+    public List<Book> getAllBooksById(Integer bookId) {
+        try (Session session = Util.getSessionFactory().openSession()) {
+            NativeQuery<Book> getAllBooksQuery = session.createNativeQuery("SELECT * FROM Book WHERE id = :bookId", Book.class);
+            getAllBooksQuery.setParameter("bookId", bookId);
+            return getAllBooksQuery.getResultList();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<Book> getAllBooksByAuthorId(Long authorId) {
         try (Session session = Util.getSessionFactory().openSession()) {
             NativeQuery<Book> getAllBooksQuery = session.createNativeQuery("SELECT * FROM Book WHERE author_id = :authorId", Book.class);
             getAllBooksQuery.setParameter("authorId", authorId);
@@ -74,7 +85,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public void cleanBooksTable() {
+    public void cleanBookTable() {
         Transaction transaction = null;
         try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();

@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AddNewBookResponse {
 
-    private Long bookId;
+    private Integer bookId;
 }

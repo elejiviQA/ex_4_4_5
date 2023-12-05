@@ -1,4 +1,4 @@
-package org.ot5usk.steps.assertions;
+package org.ot5usk.steps.assertions.lib_api_asserts;
 
 import lombok.Getter;
 import org.ot5usk.models.add_new_author.AddNewAuthorRequest;
@@ -6,6 +6,8 @@ import org.ot5usk.models.add_new_author.AddNewAuthorResponse;
 import org.ot5usk.models.add_new_book.AddNewBookRequest;
 import org.ot5usk.models.get_all_books_by_author.GetAllBooksByAuthorResponse;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.ot5usk.utils.builders.StringBuilder.expBookTitlesFromTestCases;
+
+import static org.ot5usk.utils.builders.DateBuilder.*;
 
 @Getter
 public class GetAllBooksByAuthorAsserts {
@@ -47,12 +51,17 @@ public class GetAllBooksByAuthorAsserts {
     private void setExpectedTitle() {
         expectedTitles.add(expectedBook.getBookTitle());
     }
+
     private void setCurrentTitle() {
         currentTitles.add(currentBooks.get(currentBooks.size() - 1).getBookTitle());
     }
 
+    public static void assertExpectedEmptyList(List<GetAllBooksByAuthorResponse> currentBooks) {
+        assertTrue(currentBooks.isEmpty());
+    }
+
     public void assertExpectedAuthorId() {
-        assertTrue(currentBooks.stream().allMatch(currentBook -> currentBook.getAuthor().getId().equals(currentAuthor.getAuthorId())));
+        assertTrue(currentBooks.stream().allMatch(currentBook -> currentBook.getAuthor().getId().equals(Math.toIntExact(currentAuthor.getAuthorId()))));
     }
 
     public void assertExpectedAuthorName() {
@@ -72,13 +81,16 @@ public class GetAllBooksByAuthorAsserts {
     }
 
     public void assertExpectedUpdated() {
-        Date currentDate =  currentBooks.get(currentBooks.size() - 1).getUpdated();
+        Date currentDate = currentBooks.get(currentBooks.size() - 1).getUpdated();
         if (currentDate != null) {
             assertTrue(approximateUpdatedTime - currentDate.getTime() < 30000);
         }
     }
 
     public void assertExpectedAuthorBirthDate() {
-        currentBooks.forEach(currentBook -> assertEquals(expectedAuthor.getBirthDate(), currentBook.getAuthor().getBirthDate()));
+        currentBooks.forEach(currentBook -> {
+            LocalDate currentDate = convertToLocalDateViaMillisecond(currentBook.getAuthor().getBirthDate());
+            assertEquals(expectedAuthor.getBirthDate(), currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        });
     }
 }

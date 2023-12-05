@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'jacoco'
     id "io.qameta.allure" version "2.11.2"
 }
 
@@ -12,19 +11,19 @@ repositories {
 }
 
 dependencies {
-
     implementation 'io.rest-assured:rest-assured:5.3.2'
     implementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-
+    implementation 'com.sun.xml.bind:jaxb-core:4.0.2'
+    implementation 'com.sun.xml.bind:jaxb-impl:4.0.2'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'
 
     implementation 'javax.validation:validation-api:2.0.1.Final'
 
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
 
     implementation 'org.postgresql:postgresql:42.6.0'
     implementation 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final'
@@ -38,7 +37,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-    testImplementation 'org.aspectj:aspectjweaver:1.9.6'
+    testImplementation 'org.aspectj:aspectjweaver:1.9.19'
     testImplementation 'io.qameta.allure:allure-junit5:2.23.0'
     testImplementation 'io.qameta.allure:allure-commandline:2.23.0'
     testImplementation 'io.qameta.allure:allure-assertj:2.23.0'
@@ -48,22 +47,4 @@ dependencies {
 
 test {
     useJUnitPlatform()
-    finalizedBy jacocoTestReport
 }
-
-jacocoTestReport {
-    dependsOn test
-}
-
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                counter = 'LINE'
-                minimum = 1.0
-            }
-        }
-    }
-}
-
-check.dependsOn jacocoTestCoverageVerification

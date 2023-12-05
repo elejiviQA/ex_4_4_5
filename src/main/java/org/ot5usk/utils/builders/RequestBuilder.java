@@ -19,7 +19,8 @@ public class RequestBuilder {
     }
 
     public static AddNewBookRequest buildAddNewBookRequest(String bookTitle, Long authorId) {
-        Author author = new Author(authorId);
+        Author author = new Author();
+        author.setId(Math.toIntExact(authorId));
         return new AddNewBookRequest(bookTitle, author);
     }
 }

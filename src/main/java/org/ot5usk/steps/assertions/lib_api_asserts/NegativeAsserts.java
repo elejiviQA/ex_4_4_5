@@ -1,4 +1,4 @@
-package org.ot5usk.steps.assertions;
+package org.ot5usk.steps.assertions.lib_api_asserts;
 
 import org.ot5usk.models.negative_responses.DefaultNegativeResponse;
 

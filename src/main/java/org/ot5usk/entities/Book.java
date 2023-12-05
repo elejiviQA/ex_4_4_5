@@ -2,11 +2,10 @@ package org.ot5usk.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Entity
 @Data
@@ -27,4 +26,14 @@ public class Book {
 
     @Column(name = "updated")
     private Timestamp updated;
+
+    @Override
+    public boolean equals(Object o) {
+        return this.hashCode() == o.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( bookTitle, authorId);
+    }
 }

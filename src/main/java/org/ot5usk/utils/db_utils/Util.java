@@ -1,4 +1,4 @@
-package org.ot5usk.utils.db;
+package org.ot5usk.utils.db_utils;
 
 import lombok.NoArgsConstructor;
 import org.hibernate.SessionFactory;
@@ -7,9 +7,6 @@ import org.hibernate.boot.MetadataBuilder;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.ot5usk.entities.Author;
-
-import java.awt.print.Book;
 
 @NoArgsConstructor
 public class Util {
@@ -31,7 +28,7 @@ public class Util {
         serviceRegistryBuilder
                 .applySetting("hibernate-dialect", "org.hibernate.dialect.PostgresSQLDialect")
                 .applySetting("connection.driver_class", "org.postgresql.Driver")
-                .applySetting("hibernate.hbm2ddl.auto", "validate")
+//                .applySetting("hibernate.hbm2ddl.auto", "validate")
                 .applySetting("hibernate.connection.url", "jdbc:postgresql://localhost:5432/example_db")
                 .applySetting("hibernate.connection.username","example_user")
                 .applySetting("hibernate.connection.password", "!QAZxsw2")

@@ -66,6 +66,15 @@ public class Specifications {
                 .extract().as(AddNewAuthorResponse.class);
     }
 
+    public static DefaultNegativeResponse requestSpecAddNewAuthorDuplicate(AddNewAuthorRequest addNewAuthorRequest, Integer expStCode) {
+        return given().spec(requestSpec(ContentType.JSON))
+                .body(addNewAuthorRequest)
+                .when()
+                .post(EndPoints.ADD_NEW_AUTHOR.getPath())
+                .then().spec(responseSpecWithStatus(expStCode))
+                .extract().as(DefaultNegativeResponse.class);
+    }
+
     public static AddNewBookResponse requestSpecAddNewBook(AddNewBookRequest addNewBookRequest, Integer expStCode) {
         return given().spec(requestSpec(ContentType.JSON))
                 .body(addNewBookRequest)

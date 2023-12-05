@@ -9,5 +9,5 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetAllBooksByAuthorRequest {
 
-    private Long authorId;
+    private Integer authorId;
 }

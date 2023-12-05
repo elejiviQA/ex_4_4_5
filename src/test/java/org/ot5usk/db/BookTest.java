@@ -9,12 +9,11 @@ import org.ot5usk.models.add_new_author.AddNewAuthorRequest;
 import org.ot5usk.models.add_new_author.AddNewAuthorResponse;
 import org.ot5usk.repository.BookRepository;
 import org.ot5usk.repository.BookRepositoryImpl;
-import org.ot5usk.steps.assertions.DbBookAsserts;
 import org.ot5usk.utils.builders.BookTitleLengthLimits;
 
 import java.util.List;
 
-import static org.ot5usk.steps.assertions.DbBookAsserts.assertExpectedBookListSize;
+import static org.ot5usk.steps.assertions.db_asserts.DbBookAsserts.assertDbExpectedBookListSize;
 import static org.ot5usk.steps.specifications.Specifications.executeAuth;
 import static org.ot5usk.steps.specifications.Specifications.requestSpecAddNewAuthor;
 import static org.ot5usk.utils.builders.RequestBuilder.buildAddnewAuthorRequest;
@@ -28,7 +27,7 @@ public class BookTest {
     @BeforeAll
     static void init() {
         bookRepository = new BookRepositoryImpl();
-        bookRepository.cleanBooksTable();
+        bookRepository.cleanBookTable();
 
         executeAuth("test_log", "123qweasd");
         AddNewAuthorRequest expectedAuthor = buildAddnewAuthorRequest();
@@ -47,16 +46,16 @@ public class BookTest {
 
         List<Book> currentBooks = bookRepository.getAllBooksByAuthorId(expectedAuthorResponse.getAuthorId());
         currentBooks.forEach(System.out::println);
-        assertExpectedBookListSize(2, currentBooks);
+        assertDbExpectedBookListSize(2, currentBooks);
 
         currentBooks = bookRepository.getAllBooksByTitle(firstExpBookTitle);
         currentBooks.forEach(System.out::println);
-        assertExpectedBookListSize(1, currentBooks);
+        assertDbExpectedBookListSize(1, currentBooks);
 
         bookRepository.removeBookByTitle(firstExpBookTitle);
 
         currentBooks = bookRepository.getAllBooksByAuthorId(expectedAuthorResponse.getAuthorId());
         currentBooks.forEach(System.out::println);
-        assertExpectedBookListSize(1, currentBooks);
+        assertDbExpectedBookListSize(1, currentBooks);
     }
 }

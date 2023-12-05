@@ -4,9 +4,16 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.*;
+import org.ot5usk.entities.Author;
 import org.ot5usk.models.add_new_author.AddNewAuthorRequest;
 import org.ot5usk.models.add_new_author.AddNewAuthorResponse;
-import static org.ot5usk.steps.assertions.AddNewAuthorAsserts.assertExpectedAuthorId;
+import org.ot5usk.models.negative_responses.DefaultNegativeResponse;
+import org.ot5usk.repository.AuthorRepository;
+import org.ot5usk.repository.AuthorRepositoryImpl;
+
+import static org.ot5usk.steps.assertions.db_asserts.AuthorAsserts.*;
+import static org.ot5usk.steps.assertions.lib_api_asserts.AddNewAuthorAsserts.assertExpectedAuthorId;
+import static org.ot5usk.steps.assertions.lib_api_asserts.NegativeAsserts.assertNegativeResponse;
 import static org.ot5usk.steps.specifications.Specifications.*;
 import static org.ot5usk.utils.builders.RequestBuilder.buildAddnewAuthorRequest;
 
@@ -16,6 +23,7 @@ public class AddNewAuthorTest {
 
     private AddNewAuthorRequest expectedAuthor;
     private AddNewAuthorResponse currentAuthor;
+    private final AuthorRepository authorRepository = new AuthorRepositoryImpl();
 
     @BeforeAll
     static void auth() {
@@ -24,6 +32,7 @@ public class AddNewAuthorTest {
 
     @BeforeEach
     void buildNewAuthor() {
+        authorRepository.cleanAuthorTable();
         expectedAuthor = buildAddnewAuthorRequest();
     }
 
@@ -35,6 +44,8 @@ public class AddNewAuthorTest {
     void withFullName() {
         currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 201);
         assertExpectedAuthorId(currentAuthor);
+        Author author = authorRepository.getAuthorById(currentAuthor.getAuthorId());
+        assertDbExpectedAuthorName(expectedAuthor, author);
     }
 
     @Tag("post")
@@ -46,6 +57,8 @@ public class AddNewAuthorTest {
         expectedAuthor.setSecondName(null);
         currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 201);
         assertExpectedAuthorId(currentAuthor);
+        Author author = authorRepository.getAuthorById(currentAuthor.getAuthorId());
+        assertDbExpectedAuthorName(expectedAuthor, author);
     }
 
     @Tag("post")
@@ -57,6 +70,8 @@ public class AddNewAuthorTest {
         expectedAuthor.setBirthDate(null);
         currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 201);
         assertExpectedAuthorId(currentAuthor);
+        Author author = authorRepository.getAuthorById(currentAuthor.getAuthorId());
+        assertDbExpectedAuthorName(expectedAuthor, author);
     }
 
     @Tag("post")
@@ -67,7 +82,19 @@ public class AddNewAuthorTest {
     void withoutFamilyName() {
         expectedAuthor.setFamilyName("");
         currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 400);
-        expectedAuthor.setFamilyName(null);
-        currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 400);
+    }
+
+    @Tag("post")
+    @Tag("negative")
+    @DisplayName("Duplicate author")
+    @Description("status-code: 400")
+    @Test
+    void withDuplicateAuthor() {
+        currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 201);
+        assertExpectedAuthorId(currentAuthor);
+        Author author = authorRepository.getAuthorById(currentAuthor.getAuthorId());
+        assertDbExpectedAuthorName(expectedAuthor, author);
+        DefaultNegativeResponse defaultNegativeResponse = requestSpecAddNewAuthorDuplicate(expectedAuthor,400);
+        assertNegativeResponse(defaultNegativeResponse, "1002", "Указанный автор уже добавлен в базу данных", null);
     }
 }

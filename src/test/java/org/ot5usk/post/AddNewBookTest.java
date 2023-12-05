@@ -7,15 +7,21 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.ot5usk.entities.Book;
 import org.ot5usk.models.add_new_author.AddNewAuthorRequest;
 import org.ot5usk.models.add_new_author.AddNewAuthorResponse;
 import org.ot5usk.models.add_new_book.AddNewBookRequest;
 import org.ot5usk.models.add_new_book.AddNewBookResponse;
 import org.ot5usk.models.negative_responses.DefaultNegativeResponse;
+import org.ot5usk.repository.BookRepository;
+import org.ot5usk.repository.BookRepositoryImpl;
 import org.ot5usk.utils.builders.BookTitleLengthLimits;
 
-import static org.ot5usk.steps.assertions.AddNewBookAsserts.assertExpectedBookId;
-import static org.ot5usk.steps.assertions.NegativeAsserts.assertNegativeResponse;
+import java.util.List;
+
+import static org.ot5usk.steps.assertions.db_asserts.DbBookAsserts.*;
+import static org.ot5usk.steps.assertions.lib_api_asserts.AddNewBookAsserts.assertExpectedBookId;
+import static org.ot5usk.steps.assertions.lib_api_asserts.NegativeAsserts.assertNegativeResponse;
 import static org.ot5usk.steps.specifications.Specifications.*;
 import static org.ot5usk.utils.builders.RequestBuilder.buildAddNewBookRequest;
 import static org.ot5usk.utils.builders.RequestBuilder.buildAddnewAuthorRequest;
@@ -25,11 +31,22 @@ import static org.ot5usk.utils.builders.StringBuilder.randCorrectStringBySelecte
 @Story("Adding new book")
 public class AddNewBookTest {
 
+    private AddNewAuthorRequest expectedAuthor;
     private AddNewAuthorResponse currentAuthor;
     private AddNewBookRequest expectedBook;
     private AddNewBookResponse currentBook;
     private DefaultNegativeResponse defaultNegativeResponse;
     private String expectedBookTitle;
+    private final BookRepository bookRepository = new BookRepositoryImpl();
+
+    private void executeDbAsserts(int numOfExpBooks) {
+        List<Book> currentBooks = bookRepository.getAllBooksByAuthorId(currentAuthor.getAuthorId());
+        assertDbExpectedBookListSize(numOfExpBooks, currentBooks);
+        assertDbExpectedBookAuthor(expectedAuthor, currentAuthor.getAuthorId());
+        List<String> expTitle = List.of(expectedBookTitle);
+        assertDbExpectedBookTitle(expTitle, currentBooks);
+        assertDbExpectedBookId(currentBook, currentBooks);
+    }
 
     @BeforeAll
     static void auth() {
@@ -38,7 +55,7 @@ public class AddNewBookTest {
 
     @BeforeEach
     public void init() {
-        AddNewAuthorRequest expectedAuthor = buildAddnewAuthorRequest();
+        expectedAuthor = buildAddnewAuthorRequest();
         currentAuthor = requestSpecAddNewAuthor(expectedAuthor, 201);
     }
 
@@ -46,13 +63,14 @@ public class AddNewBookTest {
     @Tag("positive")
     @DisplayName("Title length limits")
     @Description("status-code: 201")
-    @ParameterizedTest
+    @ParameterizedTest(name = "limit length: {0}")
     @EnumSource(BookTitleLengthLimits.class)
     public void withTitleLengthLimits(BookTitleLengthLimits limits) {
         expectedBookTitle = randCorrectStringBySelectedLength(limits.getLength());
         expectedBook = buildAddNewBookRequest(expectedBookTitle, currentAuthor.getAuthorId());
         currentBook = requestSpecAddNewBook(expectedBook, 201);
         assertExpectedBookId(currentBook);
+        executeDbAsserts(1);
     }
 
     @Tag("post")
@@ -66,6 +84,7 @@ public class AddNewBookTest {
         expectedBook = buildAddNewBookRequest(expectedBookTitle, currentAuthor.getAuthorId());
         currentBook = requestSpecAddNewBook(expectedBook, 201);
         assertExpectedBookId(currentBook);
+        executeDbAsserts(1);
     }
 
     @Tag("post")
@@ -80,6 +99,7 @@ public class AddNewBookTest {
         assertExpectedBookId(currentBook);
         currentBook = requestSpecAddNewBook(expectedBook, 201);
         assertExpectedBookId(currentBook);
+        executeDbAsserts(2);
     }
 
     @Tag("post")
@@ -92,6 +112,7 @@ public class AddNewBookTest {
         expectedBook = buildAddNewBookRequest(expectedBookTitle, currentAuthor.getAuthorId());
         defaultNegativeResponse = requestSpecAddNewBookNegative(expectedBook, 400);
         assertNegativeResponse(defaultNegativeResponse, "1001", "Некорректный размер поля firstName", "Валидация не пройдена");
+        assertDbExpectedEmptyBookList(currentAuthor.getAuthorId().toString());
     }
 
     @Tag("maybebugs")
@@ -107,5 +128,6 @@ public class AddNewBookTest {
         expectedBook = buildAddNewBookRequest(expectedBookTitle, currentAuthor.getAuthorId());
         defaultNegativeResponse = requestSpecAddNewBookNegative(expectedBook, expStCode);
         assertNegativeResponse(defaultNegativeResponse, expErrCode, expErrMsg, expErrDtls);
+        assertDbExpectedEmptyBookList(currentAuthor.getAuthorId().toString());
     }
 }
