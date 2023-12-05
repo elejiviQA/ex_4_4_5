@@ -6,12 +6,15 @@ import org.ot5usk.models.add_new_author.AddNewAuthorResponse;
 import org.ot5usk.models.add_new_book.AddNewBookRequest;
 import org.ot5usk.models.get_all_books_by_author.GetAllBooksByAuthorResponse;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.ot5usk.utils.DateBuilder.convertToLocalDateViaMillisecond;
 import static org.ot5usk.utils.StringBuilder.expBookTitlesFromTestCases;
 
 @Getter
@@ -79,6 +82,9 @@ public class GetAllBooksByAuthorAsserts {
     }
 
     public void assertExpectedAuthorBirthDate() {
-        currentBooks.forEach(currentBook -> assertEquals(expectedAuthor.getBirthDate(), currentBook.getAuthor().getBirthDate()));
+        currentBooks.forEach(currentBook -> {
+            LocalDate currentDate = convertToLocalDateViaMillisecond(currentBook.getAuthor().getBirthDate());
+            assertEquals(expectedAuthor.getBirthDate(), currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        });
     }
 }
